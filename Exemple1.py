@@ -7,7 +7,6 @@ from torch import nn#neural netwaork
 import numpy as np#opérations matricirlles
 from copy import deepcopy#copie
 from torch.autograd import Variable
-%matplotlib inline
 import matplotlib.pyplot as plt#graphiques
 import matplotlib.image as mpimg
 from IPython import display
