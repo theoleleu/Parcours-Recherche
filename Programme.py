@@ -2,14 +2,10 @@ import random
 import torch
 from torchvision import datasets#gestion des données
 from torch.nn import functional as F#fonctions (gradient, cross entropy...)
-from tqdm import tqdm
 from torch import nn#neural netwaork
-import numpy as np#opérations matricirlles
+import numpy as np#opérations matricielles
 from copy import deepcopy#copie
-from torch.autograd import Variable
 import matplotlib.pyplot as plt#graphiques
-import matplotlib.image as mpimg
-from IPython import display
 
 epochs = 50
 lr = 1e-3
@@ -42,7 +38,7 @@ def standard_process(epochs, train_loader : list, dev_loader : list, test_loader
         loss[task] = []
         dev_loss[task] = []
         acc[task] = []
-        for _ in tqdm(range(epochs)):
+        for _ in range(epochs):
             epoch_loss,epoch_dev_loss=normal_train(model, optimizer, train_loader[task],dev_loader[task])
             loss[task].append(epoch_loss)
             dev_loss[task].append(epoch_dev_loss)
@@ -97,7 +93,7 @@ def ewc_process(epochs, importance, train_loader : list, dev_loader : list, test
     for task in range(num_task):
         loss[task], dev_loss[task], acc[task] = [], [], []
         if task == 0:
-                for _ in tqdm(range(epochs)):
+                for _ in range(epochs):
                     epoch_loss,epoch_dev_loss=normal_train(model, optimizer, train_loader[task],dev_loader[task])
                     loss[task].append(epoch_loss)
                     dev_loss[task].append(epoch_dev_loss)
@@ -107,7 +103,7 @@ def ewc_process(epochs, importance, train_loader : list, dev_loader : list, test
             for sub_task in range(task):
                 old_tasks = old_tasks + train_loader[sub_task]   
             #old_tasks = random.sample(old_tasks, k=sample_size)# Ou on choisit une fraction des tâches
-            for _ in tqdm(range(epochs)):
+            for _ in range(epochs):
                 epoch_loss,epoch_dev_loss=ewc_train(model, optimizer, train_loader[task], dev_loader[task], Model(model, old_tasks), importance)
                 loss[task].append(epoch_loss)
                 dev_loss[task].append(epoch_dev_loss)
