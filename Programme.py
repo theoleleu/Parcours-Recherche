@@ -79,6 +79,16 @@ def test(model: nn.Module, data_loader: list):
         correct += (estimation == target).data.sum()
     return correct/ len(data_loader)
 
+
+
+
+
+
+
+
+
+
+
 #EWC
 def ewc_process(epochs, importance, train_loader : list, dev_loader : list, test_loader : list, use_cuda=True, weight=None):
     model = MLP(hidden_size)
