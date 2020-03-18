@@ -1,4 +1,4 @@
-from Exemple1.py import *
+from Programme import *
 #Exemple
 from torch.utils.data import Dataset
 size = 1000
@@ -45,10 +45,10 @@ sample_size = 100
 hidden_size = 80
 num_task = 3
 
-loss, dev_loss, acc, weight = standard_process(epochs)
+loss, dev_loss, acc, weight = standard_process(epochs,train_loader,dev_loader,test_loader)
 loss_plot2(loss,dev_loss)
 accuracy_plot(acc)
-loss_ewc, dev_loss_ewc, acc_ewc = ewc_process(epochs, importance=1000)
+loss_ewc, dev_loss_ewc, acc_ewc = ewc_process(epochs,train_loader, dev_loader, test_loader, importance=1000)
 loss_plot(loss_ewc)
 accuracy_plot(acc_ewc)
 plt.plot(acc[0], label="sgd")
