@@ -94,11 +94,11 @@ class Model(object):
         self.params = {n: p for n, p in self.model.named_parameters() if p.requires_grad}
         self._means = {}
         self._fisher = self._diag_fisher()
-        for n, p in deepcopy(self.params).items():
+        for n, p in self.params.items():
             self._means[n] =p.data
     def _diag_fisher(self):
         fisher = {}
-        for n, p in deepcopy(self.params).items():
+        for n, p in self.params.items():
             p.data.zero_()
             fisher[n] = p.data
         self.model.eval()
