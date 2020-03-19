@@ -141,7 +141,6 @@ def ewc_process(epochs, importance, train_loader : list, dev_loader : list, test
     return loss, dev_loss, acc
 
 
-
 def ewc_train(model, optimizer, data_load: list, dev_load: list,ewc: Model, importance: float):
     model.train()
     epoch_loss, dev_epoch_loss = 0, 0
