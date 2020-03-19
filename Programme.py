@@ -86,6 +86,37 @@ def test(model: nn.Module, data_loader: list):
 
 
 #EWC
+class Model(object):
+    def __init__(self, model: nn.Module, dataset: list):#le model d'hyperparamètre et les données
+        self.model = model
+        self.dataset = dataset
+        self.params = {n: p for n, p in self.model.named_parameters() if p.requires_grad}
+        self._means = {}
+        self._fisher = self._diag_fisher()
+        for n, p in deepcopy(self.params).items():
+            self._means[n] =p.data
+    def _diag_fisher(self):
+        fisher = {}
+        for n, p in deepcopy(self.params).items():
+            p.data.zero_()
+            fisher[n] = p.data
+        self.model.eval()
+        for input,target in self.dataset:
+            self.model.zero_grad()
+            output = self.model(input)              #.view(1, -1)
+            #label = output.max(dim=1)[1]            #.view(-1)
+            #loss = F.nll_loss(F.log_softmax(output, dim=1),label)
+            
+            loss = F.nll_loss(F.log_softmax(output, dim=1),target)
+            loss.backward()
+            for n, p in self.model.named_parameters():
+                fisher[n].data += p.grad.data ** 2 / len(self.dataset)#Carré du gradient de la log vraisemblance / nbdonnées
+        fisher = {n: p for n, p in fisher.items()}#Copie du dictionnaire Utilité ?
+        return fisher
+        
+        #Carré du gradient de la log vraisemblance / nbdonnées p.grad.data dérivée de la log vraisemblance car p.data est le delta de la negative log vraisemblance  d'où le carrée de la norme 2 du gradient de la negative log vraisemblance
+         
+         
 def ewc_process(epochs, importance, train_loader : list, dev_loader : list, test_loader : list, use_cuda=True, weight=None):
     model = MLP(hidden_size)
     optimizer = torch.optim.SGD(params=model.parameters(), lr=lr)
@@ -133,36 +164,7 @@ def ewc_train(model, optimizer, data_load: list, dev_load: list,ewc: Model, impo
         optimizer.step()
     return epoch_loss / float(len(data_load)), dev_epoch_loss / float(len(dev_load))
 
-class Model(object):
-    def __init__(self, model: nn.Module, dataset: list):#le model d'hyperparamètre et les données
-        self.model = model
-        self.dataset = dataset
-        self.params = {n: p for n, p in self.model.named_parameters() if p.requires_grad}
-        self._means = {}
-        self._fisher = self._diag_fisher()
-        for n, p in deepcopy(self.params).items():
-            self._means[n] =p.data
-    def _diag_fisher(self):
-        fisher = {}
-        for n, p in deepcopy(self.params).items():
-            p.data.zero_()
-            fisher[n] = p.data
-        self.model.eval()
-        for input,target in self.dataset:
-            self.model.zero_grad()
-            output = self.model(input)              #.view(1, -1)
-            #label = output.max(dim=1)[1]            #.view(-1)
-            #loss = F.nll_loss(F.log_softmax(output, dim=1),label)
-            
-            loss = F.nll_loss(F.log_softmax(output, dim=1),target)
-            loss.backward()
-            for n, p in self.model.named_parameters():
-                fisher[n].data += p.grad.data ** 2 / len(self.dataset)#Carré du gradient de la log vraisemblance / nbdonnées
-        fisher = {n: p for n, p in fisher.items()}#Copie du dictionnaire Utilité ?
-        return fisher
-        
-        #Carré du gradient de la log vraisemblance / nbdonnées p.grad.data dérivée de la log vraisemblance car p.data est le delta de la negative log vraisemblance  d'où le carrée de la norme 2 du gradient de la negative log vraisemblance
-          
+ 
 def loss_plot(x):
     for t, v in x.items():
         plt.plot(list(range(t * epochs, (t + 1) * epochs)), v)
