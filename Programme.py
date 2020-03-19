@@ -84,8 +84,6 @@ def test(model: nn.Module, data_loader: list):
 
 
 
-
-
 #EWC
 class Model(object):
     def __init__(self, model: nn.Module, dataset: list):#le model d'hyperparamètre et les données
@@ -129,24 +127,17 @@ def ewc_process(epochs, importance, train_loader : list, dev_loader : list, test
     loss, dev_loss, acc, ewc = {}, {}, {}, {}
     for task in range(num_task):
         loss[task], dev_loss[task], acc[task] = [], [], []
-        if task == 0:
-                for _ in tqdm(range(epochs)):
-                    epoch_loss,epoch_dev_loss=normal_train(model, optimizer, train_loader[task],dev_loader[task])
-                    loss[task].append(epoch_loss)
-                    dev_loss[task].append(epoch_dev_loss)
-                    acc[task].append(test(model, test_loader[task]))#calcul de l'accuracy
-        else:
-            old_tasks = []
-            for sub_task in range(task):
-                old_tasks = old_tasks + train_loader[sub_task]   
+        old_tasks = []
+        for sub_task in range(task):
+            old_tasks = old_tasks + train_loader[sub_task]   
             #old_tasks = random.sample(old_tasks, k=sample_size)# Ou on choisit une fraction des tâches
-            for _ in tqdm(range(epochs)):
-                epoch_loss,epoch_dev_loss=ewc_train(model, optimizer, train_loader[task], dev_loader[task], Model(model, old_tasks), importance)
-                loss[task].append(epoch_loss)
-                dev_loss[task].append(epoch_dev_loss)
-                for sub_task in range(task + 1):
-                    task_acc=test(model, test_loader[sub_task])
-                    acc[sub_task].append(task_acc)
+        for _ in tqdm(range(epochs)):
+            epoch_loss,epoch_dev_loss=ewc_train(model, optimizer, train_loader[task], dev_loader[task], Model(model, old_tasks), importance)
+            loss[task].append(epoch_loss)
+            dev_loss[task].append(epoch_dev_loss)
+            for sub_task in range(task + 1):
+                task_acc=test(model, test_loader[sub_task])
+                acc[sub_task].append(task_acc)
     return loss, dev_loss, acc
 
 
