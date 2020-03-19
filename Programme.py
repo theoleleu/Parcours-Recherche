@@ -186,9 +186,3 @@ def accuracy_plot(x):
         plt.plot(list(range(t * epochs, num_task * epochs)), v)
     plt.ylim(0, 1)
 
-
-
-
-
-
-
