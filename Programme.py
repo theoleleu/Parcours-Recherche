@@ -45,8 +45,6 @@ def standard_process(epochs, train_loader : list, dev_loader : list, test_loader
             dev_loss[task].append(epoch_dev_loss)
             for sub_task in range(task + 1):
                 acc[sub_task].append(test(model, test_loader[sub_task]))
-        if task == 0 and weight:
-            weight = model.state_dict()
     return loss, dev_loss, acc, weight
     
     
