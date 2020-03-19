@@ -71,9 +71,9 @@ def test(model: nn.Module, data_loader: list):
     correct = 0
     for input, target in data_loader:
         output = model(input)
-        estimation=F.softmax(output, dim=1).max(dim=1)[1]
+        estimation=F.softmax(dim=1)[1]
         correct += (estimation == target).data.sum()
-    return correct/ len(data_loader)
+    return float(correct.item())/ float(len(data_loader))
 
 
 
