@@ -151,8 +151,10 @@ class Model(object):
         for input,target in self.dataset:
             self.model.zero_grad()
             output = self.model(input)              #.view(1, -1)
-            label = output.max(dim=1)[1]            #.view(-1)
-            loss = F.nll_loss(F.log_softmax(output, dim=1), label) 
+            #label = output.max(dim=1)[1]            #.view(-1)
+            #loss = F.nll_loss(F.log_softmax(output, dim=1),label)
+            
+            loss = F.nll_loss(F.log_softmax(output, dim=1),target)
             loss.backward()
             for n, p in self.model.named_parameters():
                 fisher[n].data += p.grad.data ** 2 / len(self.dataset)#Carré du gradient de la log vraisemblance / nbdonnées
