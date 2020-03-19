@@ -116,7 +116,12 @@ class Model(object):
         return fisher
         
         #Carré du gradient de la log vraisemblance / nbdonnées p.grad.data dérivée de la log vraisemblance car p.data est le delta de la negative log vraisemblance  d'où le carrée de la norme 2 du gradient de la negative log vraisemblance
-         
+    def penalty(self, model: nn.Module):
+        loss = 0
+        for n, p in model.named_parameters():#tache n et poids p
+            _loss = self._fisher[n] * (p - self._means[n]) ** 2#Pénalisation par information de Fisher
+            loss += _loss.sum()#Somme des pénalisations par information de Fisher
+        return loss     
          
 def ewc_process(epochs, importance, train_loader : list, dev_loader : list, test_loader : list, use_cuda=True, weight=None):
     model = MLP(hidden_size)
