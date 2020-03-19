@@ -131,7 +131,7 @@ def ewc_train(model, optimizer, data_load: list, dev_load: list,ewc: Model, impo
         dev_epoch_loss += float(dloss.item())#Perte cumulée
         dloss.backward()
         optimizer.step()
-    return epoch_loss / len(data_load), dev_epoch_loss / len(dev_load)
+    return epoch_loss / float(len(data_load)), dev_epoch_loss / float(len(dev_load))
 
 class Model(object):
     def __init__(self, model: nn.Module, dataset: list):#le model d'hyperparamètre et les données
@@ -150,12 +150,12 @@ class Model(object):
         self.model.eval()
         for input,target in self.dataset:
             self.model.zero_grad()
-            output = self.model(input).view(1, -1)
+            output = self.model(input)#.view(1, -1)
             label = output.max(1)[1].view(-1)
             loss = F.nll_loss(F.log_softmax(output, dim=1), label) 
             loss.backward()
             for n, p in self.model.named_parameters():
-                fisher[n].data += p.grad.data ** 2 / len(self.dataset)
+                fisher[n].data += p.grad.data ** 2 / len(self.dataset)#Carré du gradient de la log vraisemblance / nbdonnées
         fisher = {n: p for n, p in fisher.items()}#Copie du dictionnaire Utilité ?
         return fisher
         
