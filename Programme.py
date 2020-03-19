@@ -71,7 +71,7 @@ def test(model: nn.Module, data_loader: list):
     correct = 0
     for input, target in data_loader:
         output = model(input)
-        estimation=F.softmax(dim=1)[1]
+        estimation=output.max(dim=1)[1]
         correct += (estimation == target).data.sum()
     return float(correct.item())/ float(len(data_loader))
 
@@ -150,8 +150,8 @@ class Model(object):
         self.model.eval()
         for input,target in self.dataset:
             self.model.zero_grad()
-            output = self.model(input)#.view(1, -1)
-            label = output.max(1)[1].view(-1)
+            output = self.model(input)              #.view(1, -1)
+            label = output.max(dim=1)[1]            #.view(-1)
             loss = F.nll_loss(F.log_softmax(output, dim=1), label) 
             loss.backward()
             for n, p in self.model.named_parameters():
