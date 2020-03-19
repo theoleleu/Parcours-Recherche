@@ -85,6 +85,38 @@ def test(model: nn.Module, data_loader: list):
 
 
 #EWC
+class Model(object):
+    def __init__(self, model: nn.Module, dataset: list):#le model d'hyperparamètre et les données
+        self.model = model
+        self.dataset = dataset
+        self.params = {n: p for n, p in self.model.named_parameters() if p.requires_grad}
+        self._means = {}
+        self._fisher = self._diag_fisher()
+        for n, p in self.params.items():
+            self._means[n] =p.data
+    def _diag_fisher(self):
+        fisher = {}
+        for n, p in self.params.items():
+            p.data.zero_()
+            fisher[n] = p.data
+        self.model.eval()
+        for input,target in self.dataset:
+            self.model.zero_grad()
+            output = self.model(input)
+            #loss ?????
+            loss.backward()
+            for n, p in self.model.named_parameters():
+                fisher[n].data += p.grad.data ** 2 / len(self.dataset)#Carré du gradient de la log vraisemblance / nbdonnées
+        fisher = {n: p for n, p in fisher.items()}#Copie du dictionnaire Utilité ?
+        return fisher
+        
+        #Carré du gradient de la log vraisemblance / nbdonnées p.grad.data dérivée de la log vraisemblance car p.data est le delta de la negative log vraisemblance  d'où le carrée de la norme 2 du gradient de la negative log vraisemblance
+    def penalty(self, model: nn.Module):
+        loss = 0
+        for n, p in model.named_parameters():#tache n et poids p
+            _loss = self._fisher[n] * (p - self._means[n]) ** 2#Pénalisation par information de Fisher
+            loss += _loss.sum()#Somme des pénalisations par information de Fisher
+        return loss     
          
 def ewc_process(epochs, importance, train_loader : list, dev_loader : list, test_loader : list, use_cuda=True, weight=None):
     model = MLP(hidden_size)
