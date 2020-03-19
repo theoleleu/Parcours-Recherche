@@ -26,12 +26,12 @@ color=[0]*1000+[1]*1000+[2]*1000+[3]*1000
 train_loader[0] = [(torch.tensor(i[0]),torch.tensor([i[1]])) for i in zip(TR1,color)]
 train_loader[1] = [(torch.tensor(i[0]),torch.tensor([i[1]])) for i in zip(TR2,color)]
 train_loader[2] = [(torch.tensor(i[0]),torch.tensor([i[1]])) for i in zip(TR3,color)]
-test_loader[0] = [(torch.tensor(i[0]),torch.tensor([i[1]])) for i in zip(TE1,color2)]
-test_loader[1] = [(torch.tensor(i[0]),torch.tensor([i[1]])) for i in zip(TE2,color2)]
-test_loader[2] = [(torch.tensor(i[0]),torch.tensor([i[1]])) for i in zip(TE3,color2)]
-dev_loader[0] = [(torch.tensor(i[0]),torch.tensor([i[1]])) for i in zip(TE1,color2)]
-dev_loader[1] = [(torch.tensor(i[0]),torch.tensor([i[1]])) for i in zip(TE2,color2)]
-dev_loader[2] = [(torch.tensor(i[0]),torch.tensor([i[1]])) for i in zip(TE3,color2)]
+test_loader[0] = [(torch.tensor(i[0]),torch.tensor([i[1]])) for i in zip(TR1,color)]
+test_loader[1] = [(torch.tensor(i[0]),torch.tensor([i[1]])) for i in zip(TR2,color)]
+test_loader[2] = [(torch.tensor(i[0]),torch.tensor([i[1]])) for i in zip(TR3,color)]
+dev_loader[0] = [(torch.tensor(i[0]),torch.tensor([i[1]])) for i in zip(TR1,color)]
+dev_loader[1] = [(torch.tensor(i[0]),torch.tensor([i[1]])) for i in zip(TR2,color)]
+dev_loader[2] = [(torch.tensor(i[0]),torch.tensor([i[1]])) for i in zip(TR3,color)]
 
 ##TESTS
 epochs = 50
