@@ -45,7 +45,7 @@ def standard_process(epochs, train_loader : list, dev_loader : list, test_loader
             dev_loss[task].append(epoch_dev_loss)
             for sub_task in range(task + 1):
                 acc[sub_task].append(test(model, test_loader[sub_task]))
-    return loss, dev_loss, acc, weight
+    return loss, dev_loss, acc
     
     
 def normal_train(model, optimizer, data_load: list,dev_load : list):
