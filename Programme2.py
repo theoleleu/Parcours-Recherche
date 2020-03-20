@@ -10,9 +10,7 @@ from tqdm import tqdm
 
 epochs = 50
 lr = 1e-3
-batch_size = 100
-sample_size = 100
-hidden_size = 50
+hidden_size = 5
 num_task = 3
 
 class MLP(nn.Module):

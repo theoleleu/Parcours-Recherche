@@ -8,7 +8,7 @@ from copy import deepcopy#copie
 import matplotlib.pyplot as plt#graphiques
 from tqdm import tqdm
 
-epochs = 50
+epochs = 30
 lr = 1e-3
 batch_size = 100
 sample_size = 100
