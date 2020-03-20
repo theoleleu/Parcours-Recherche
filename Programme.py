@@ -34,12 +34,12 @@ class MLP(nn.Module):
 def standard_process(epochs, train_loader : list, dev_loader : list, test_loader : list, use_cuda=True, weight=True):
     model = MLP(hidden_size)
     optimizer = torch.optim.SGD(params=model.parameters(), lr=lr)
-    loss, dev_loss, acc = {}, {}, {}
+    loss, dev_loss, acc = [], [], []
     for task in range(num_task):
         
-        loss[task] = []
-        dev_loss[task] = []
-        acc[task] = []
+        loss.append([])
+        dev_loss.append([])
+        acc.append([])
 
         for _ in tqdm(range(epochs)):
 
@@ -89,17 +89,17 @@ def test(model: nn.Module, data_loader: list):
 
 
 def loss_plot(x):
-    for t, v in x.items():
+    for t, v in enumerate(x):
         plt.plot(list(range(t * epochs, (t + 1) * epochs)), v)
         
 def loss_plot2(x,y):
-    for t, v in x.items():
+    for t, v in enumerate(x):
         plt.plot(list(range(t * epochs, (t + 1) * epochs)), v)
-    for t, v in y.items():
+    for t, v in enumerate(y):
         plt.plot(list(range(t * epochs, (t + 1) * epochs)), v)
 
 def accuracy_plot(x):
-    for t, v in x.items():
+    for t, v in enumerate(x):
         plt.plot(list(range(t * epochs, num_task * epochs)), v)
     plt.ylim(0, 1)
 
