@@ -40,7 +40,7 @@ batch_size = 100
 sample_size = 100
 hidden_size = 80
 num_task = 3
-loss, dev_loss, acc = standard_process(epochs,train_loader,dev_loader,test_loader)
+loss, dev_loss, acc = standard_process(epochs,train_loader,train_loader,train_loader)
 loss_plot2(loss,dev_loss)
 #accuracy_plot(acc)
 #loss_ewc, dev_loss_ewc, acc_ewc = ewc_process(epochs,train_loader, dev_loader, test_loader, importance=1000)
