@@ -36,27 +36,34 @@ def standard_process(epochs, train_loader : list, dev_loader : list, test_loader
     optimizer = torch.optim.SGD(params=model.parameters(), lr=lr)
     loss, dev_loss, acc = {}, {}, {}
     for task in range(num_task):
+        
         loss[task] = []
         dev_loss[task] = []
         acc[task] = []
+
         for _ in tqdm(range(epochs)):
+
             epoch_loss,epoch_dev_loss=normal_train(model, optimizer, train_loader[task],dev_loader[task])
             loss[task].append(epoch_loss)
             dev_loss[task].append(epoch_dev_loss)
+
             for sub_task in range(task + 1):
+
                 acc[sub_task].append(test(model, test_loader[sub_task]))
+    
     return loss, dev_loss, acc
     
     
 def normal_train(model, optimizer, data_load: list,dev_load : list):
     model.train()
     epoch_loss,epoch_dev_loss = 0, 0
+
     for inp,target in dev_load:
         optimizer.zero_grad()
         output = model(inp)
         devloss = F.cross_entropy(output, target)
         epoch_dev_loss += float(devloss.item())
-        
+
     for inp,target in data_load:
         optimizer.zero_grad()
         output = model(inp)
@@ -72,9 +79,11 @@ def test(model: nn.Module, data_loader: list):
     model.eval()
     correct = 0
     for input, target in data_loader:
+
         output = model(input)
         estimation=output.max(dim=1)[1]
         correct += (estimation == target).data.sum()
+    
     return float(correct.item())/ float(len(data_loader))
 
 
