@@ -82,6 +82,9 @@ def test(model: nn.Module, data_loader: list):
 
 
 
+
+
+
 #EWC
 class Model(object):
     def __init__(self, model: nn.Module, dataset: list):#le model d'hyperparamètre et les données
