@@ -43,7 +43,7 @@ def standard_process(epochs, train_loader : list, dev_loader : list, test_loader
 
         for _ in tqdm(range(epochs)):
 
-            epoch_loss,epoch_dev_loss=normal_train(model, optimizer, train_loader[task],dev_loader[task])
+            epoch_loss,epoch_dev_loss, model=normal_train(model, optimizer, train_loader[task],dev_loader[task])
             loss[task].append(epoch_loss)
             dev_loss[task].append(epoch_dev_loss)
 
@@ -87,7 +87,7 @@ def normal_train(model, optimizer, data_load: list,dev_load : list):
         loss = F.cross_entropy(output, target)
         loss.backward()
         optimizer.step()
-    return epoch_loss / float(mi), epoch_dev_loss / float(mi)
+    return epoch_loss / float(mi), epoch_dev_loss / float(mi), model
 
 def test(model: nn.Module, data_loader: list):
     model.eval()
