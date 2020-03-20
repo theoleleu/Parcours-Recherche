@@ -85,16 +85,9 @@ def normal_train(model, optimizer, data_load: list,dev_load : list):
         optimizer.zero_grad()
         output = model(inp)
         loss = F.cross_entropy(output, target)
-        epoch_loss += float(loss.item())
         loss.backward()
         optimizer.step()
-      else:
-        inp,target=dev_load[i]
-        optimizer.zero_grad()
-        output = model(inp)
-        devloss = F.cross_entropy(output, target)
-        epoch_dev_loss += float(devloss.item())
-    return epoch_loss / float(len(data_load)), epoch_dev_loss / float(len(dev_load))
+    return epoch_loss / float(mi), epoch_dev_loss / float(mi)
 
 def test(model: nn.Module, data_loader: list):
     model.eval()
@@ -174,7 +167,7 @@ def ewc_process(epochs, importance, train_loader : list, dev_loader : list, test
 
 def ewc_train(model, optimizer, data_load: list, dev_load: list,ewc: Model, importance: float):
     model.train()
-    epoch_loss, dev_epoch_loss = 0, 0
+    epoch_loss, epoch_dev_loss = 0, 0
     n=len(data_load)
     m=len(dev_load)
     ma=max(len(data_load),len(dev_load))
@@ -203,16 +196,9 @@ def ewc_train(model, optimizer, data_load: list, dev_load: list,ewc: Model, impo
         optimizer.zero_grad()
         output = model(inp)
         loss = F.cross_entropy(output, target) + importance * ewc.penalty(model)
-        epoch_loss += float(loss.item())
         loss.backward()
         optimizer.step()
-      else:
-        inp,target=dev_load[i]
-        optimizer.zero_grad()
-        output = model(inp)
-        devloss = F.cross_entropy(output, target) + importance * ewc.penalty(model)
-        epoch_dev_loss += float(devloss.item())
-    return epoch_loss / float(len(data_load)), dev_epoch_loss / float(len(dev_load))
+    return epoch_loss / float(mi), epoch_dev_loss / float(mi)
  
 def loss_plot(x):
     for t, v in x.items():
