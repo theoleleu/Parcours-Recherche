@@ -66,7 +66,6 @@ def hessian(y, x):
 
 
 def penalty(model,data,task,optimizer):
-    model.eval()
     nbtasks=len(model)
     pen=0
     means={}
@@ -76,9 +75,10 @@ def penalty(model,data,task,optimizer):
     for i in range(nbtasks):
       loss=0
       sample=random.sample(data[i], k=sample_size)
+      model[i].eval()
       for inp,target in sample:
         optimizer.zero_grad()
-        output = model(inp)
+        output = model[i](inp)
         loss += F.cross_entropy(output, target)
       pen+= torch.transpose(means[task]-means[i])*hessian(loss, model[i])*(means[task]-means[i])
     return pen
