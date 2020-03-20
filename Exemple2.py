@@ -48,9 +48,6 @@ num_task = 3
 loss, dev_loss, acc = standard_process(epochs,train_loader,dev_loader,test_loader)
 loss_plot2(loss,dev_loss)
 accuracy_plot(acc)
-loss_ewc, dev_loss_ewc, acc_ewc = ewc_process(epochs,train_loader, dev_loader, test_loader, importance=1000)
-loss_plot(loss_ewc)
-accuracy_plot(acc_ewc)
+
 plt.plot(acc[0], label="sgd")
-plt.plot(acc_ewc[0], label="ewc")
 plt.legend()
