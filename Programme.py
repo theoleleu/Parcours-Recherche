@@ -56,11 +56,14 @@ def normal_train(model, optimizer, data_load: list,dev_load : list):
         output = model(inp)
         devloss = F.cross_entropy(output, target)
         epoch_dev_loss += float(devloss.item())
+        
     for inp,target in data_load:
         optimizer.zero_grad()
         output = model(inp)
         loss = F.cross_entropy(output, target)
         epoch_loss += float(loss.item())
+
+
         loss.backward()
         optimizer.step()
     return epoch_loss / float(len(data_load)), epoch_dev_loss / float(len(dev_load))
