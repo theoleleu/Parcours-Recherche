@@ -57,22 +57,43 @@ def standard_process(epochs, train_loader : list, dev_loader : list, test_loader
 def normal_train(model, optimizer, data_load: list,dev_load : list):
     model.train()
     epoch_loss,epoch_dev_loss = 0, 0
+    n=len(data_load)
+    m=len(dev_load)
+    ma=max(len(data_load),len(dev_load))
+    mi=min(len(data_load),len(dev_load))
+    if n>=m:
+      o=1
+    else:
+      o=0
+    for i in range(mi):
+      inp,target=dev_load[i]
+      optimizer.zero_grad()
+      output = model(inp)
+      devloss = F.cross_entropy(output, target)
+      epoch_dev_loss += float(devloss.item())
 
-    for inp,target in dev_load:
-        optimizer.zero_grad()
-        output = model(inp)
-        devloss = F.cross_entropy(output, target)
-        epoch_dev_loss += float(devloss.item())
-
-    for inp,target in data_load:
+      inp,target=data_load[i]
+      optimizer.zero_grad()
+      output = model(inp)
+      loss = F.cross_entropy(output, target)
+      epoch_loss += float(loss.item())
+      loss.backward()
+      optimizer.step()
+    for i in range(mi,ma):
+      if o==1:
+        inp,target=data_load[i]
         optimizer.zero_grad()
         output = model(inp)
         loss = F.cross_entropy(output, target)
         epoch_loss += float(loss.item())
-
-
         loss.backward()
         optimizer.step()
+      else:
+        inp,target=dev_load[i]
+        optimizer.zero_grad()
+        output = model(inp)
+        devloss = F.cross_entropy(output, target)
+        epoch_dev_loss += float(devloss.item())
     return epoch_loss / float(len(data_load)), epoch_dev_loss / float(len(dev_load))
 
 def test(model: nn.Module, data_loader: list):
@@ -154,22 +175,44 @@ def ewc_process(epochs, importance, train_loader : list, dev_loader : list, test
 def ewc_train(model, optimizer, data_load: list, dev_load: list,ewc: Model, importance: float):
     model.train()
     epoch_loss, dev_epoch_loss = 0, 0
-    for input, target in data_load:
+    n=len(data_load)
+    m=len(dev_load)
+    ma=max(len(data_load),len(dev_load))
+    mi=min(len(data_load),len(dev_load))
+    if n>=m:
+      o=1
+    else:
+      o=0
+    for i in range(mi):
+      inp,target=dev_load[i]
+      optimizer.zero_grad()
+      output = model(inp)
+      devloss = F.cross_entropy(output, target) + importance * ewc.penalty(model)
+      epoch_dev_loss += float(devloss.item())
+
+      inp,target=data_load[i]
+      optimizer.zero_grad()
+      output = model(inp)
+      loss = F.cross_entropy(output, target) + importance * ewc.penalty(model)
+      epoch_loss += float(loss.item())
+      loss.backward()
+      optimizer.step()
+    for i in range(mi,ma):
+      if o==1:
+        inp,target=data_load[i]
         optimizer.zero_grad()
-        output = model(input)
+        output = model(inp)
         loss = F.cross_entropy(output, target) + importance * ewc.penalty(model)
         epoch_loss += float(loss.item())
         loss.backward()
         optimizer.step()
-    for input, target in dev_load:
+      else:
+        inp,target=dev_load[i]
         optimizer.zero_grad()
-        output = model(input)
-        dloss = F.cross_entropy(output, target) + importance * ewc.penalty(model)
-        dev_epoch_loss += float(dloss.item())#Perte cumulée
-        dloss.backward()
-        optimizer.step()
+        output = model(inp)
+        devloss = F.cross_entropy(output, target) + importance * ewc.penalty(model)
+        epoch_dev_loss += float(devloss.item())
     return epoch_loss / float(len(data_load)), dev_epoch_loss / float(len(dev_load))
-
  
 def loss_plot(x):
     for t, v in x.items():
