@@ -140,7 +140,7 @@ def train(model, dic1, optimizer, task : int, train_load: list, dev_load: list, 
               penal+=torch.dot(d,un*d)-2*torch.dot(d,vn)
 
     if ini==0:
-       model[task].load_state_dict(dic1)#average taken
+        model[task].load_state_dict(dic1)#average taken
 
     #for inp,target in train_load[task]:
     #    optimizer.zero_grad()
