@@ -12,6 +12,7 @@ def plot2(x,y):
 
 
 from torch.utils.data import Dataset
+from matplotlib import pyplot as plt
 size = 100
 sigma = 0.6
 a1=np.concatenate((np.random.normal(3, sigma, size), np.random.normal(4, sigma, size), np.random.normal(2, sigma, size),np.random.normal(5, sigma, size)))

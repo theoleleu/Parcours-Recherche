@@ -1,6 +1,7 @@
 from Programme import *
 #Exemple
 from torch.utils.data import Dataset
+import numpy as np
 size = 1000
 size2= 500
 sigma = 0.6
