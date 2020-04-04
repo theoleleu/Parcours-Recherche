@@ -10,7 +10,6 @@ from copy import deepcopy
 import torch.autograd as autograd
 import time
 import sys
-from typing import Dict
 from torch.distributions import Categorical
 
 epochs = 50
@@ -69,28 +68,26 @@ def penalty(model,data,task):
     u,v={},{}
     means=[]
     for i in range(nbtasks):
-      means.append({})
-      for n, p in model[i].named_parameters():
-        means[i][n] =p.data
+        means.append({})
+        for n, p in model[i].named_parameters():
+            means[i][n] =p.data
     for i in range(nbtasks):
-      fim=fim_diag(model[i],data[i])
-      d=means[i]
+        fim=fim_diag(model[i],data[i])
+        d=means[i]
       
-      for n, p in fim.items():
-          if 'weight' in n:
-            if n in u:
-              u[n]+=fim[n]
-              v[n]+=fim[n]*d[n]
-            else:
-              u[n]=fim[n]
-              v[n]=fim[n]*d[n]
+        for n, p in fim.items():
+            if 'weight' in n:
+                if n in u:
+                    u[n]+=fim[n]
+                    v[n]+=fim[n]*d[n]
+                else:
+                    u[n]=fim[n]
+                    v[n]=fim[n]*d[n]
     return u,v
 
 
 def process(epochs,  train_loader : list, dev_loader : list, test_loader : list, importance, use_cuda=True, weight=None):
-    model=[]
-    loss, dev_loss, acc = [], [], []
-    opt = []
+    model, loss, dev_loss, acc, opt = [], [], [], [], []
     for task in range(num_task):
         loss.append([])
         dev_loss.append([])
@@ -103,9 +100,9 @@ def process(epochs,  train_loader : list, dev_loader : list, test_loader : list,
     for e in tqdm(range(epochs)):
         for task in range(num_task):
             if e==0:
-              epoch_loss,epoch_dev_loss=train(model, dic1, opt[task], task, train_loader, dev_loader[task], importance,1)
+                epoch_loss,epoch_dev_loss=train(model, dic1, opt[task], task, train_loader, dev_loader[task], importance,1)
             else:
-              epoch_loss,epoch_dev_loss=train(model, dic1, opt[task], task, train_loader, dev_loader[task], importance)
+                epoch_loss,epoch_dev_loss=train(model, dic1, opt[task], task, train_loader, dev_loader[task], importance)
             loss[task].append(epoch_loss)
             dev_loss[task].append(epoch_dev_loss)
             for sub_task in range(task + 1):
@@ -116,11 +113,11 @@ def process(epochs,  train_loader : list, dev_loader : list, test_loader : list,
         avg=MLP(hidden_size)
         dic1=deepcopy(model[0].state_dict())
         for name1, param1 in model[0].named_parameters():
-          dic1[name1].data.copy_(dic1[name1].data*beta)
+            dic1[name1].data.copy_(dic1[name1].data*beta)
         for i in range(1,num_task):
-          for name, param in model[i].named_parameters():
-            if name in dic1:
-              dic1[name].data.copy_(dic1[name].data + beta*param.data)
+            for name, param in model[i].named_parameters():
+                if name in dic1:
+                    dic1[name].data.copy_(dic1[name].data + beta*param.data)
 
     return loss, dev_loss, acc
 
@@ -135,12 +132,12 @@ def train(model, dic1, optimizer, task : int, train_load: list, dev_load: list, 
     penal=0
     for n, p in model[task].named_parameters():
           if ini==0 and 'weight' in n:
-            d=p.data
-            un,vn=u[n],v[n]
-            if len(d.size())>1:
-              d=d[:,0]
-              un,vn=un[:,0],vn[:,0]
-            penal+=torch.dot(d,un*d)-2*torch.dot(d,vn)
+              d=p.data
+              un,vn=u[n],v[n]
+              if len(d.size())>1:
+                  d=d[:,0]
+                  un,vn=un[:,0],vn[:,0]
+              penal+=torch.dot(d,un*d)-2*torch.dot(d,vn)
 
     if ini==0:
        model[task].load_state_dict(dic1)#average taken
@@ -160,13 +157,13 @@ def train(model, dic1, optimizer, task : int, train_load: list, dev_load: list, 
 
         penal=0
         for n, p in model[task].named_parameters():
-          if ini==0 and 'weight' in n:
-            d=p.data
-            un,vn=u[n],v[n]
-            if len(d.size())>1:
-              d=d[:,0]
-              un,vn=un[:,0],vn[:,0]
-            penal+=torch.dot(d,un*d)-2*torch.dot(d,vn)
+            if ini==0 and 'weight' in n:
+                d=p.data
+                un,vn=u[n],v[n]
+                if len(d.size())>1:
+                    d=d[:,0]
+                    un,vn=un[:,0],vn[:,0]
+                penal+=torch.dot(d,un*d)-2*torch.dot(d,vn)
 
         optimizer.zero_grad()
         output = model[task](inp)
