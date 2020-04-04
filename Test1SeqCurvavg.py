@@ -1,20 +1,13 @@
-from SeqCurv import *
+from SeqCurvavg import *
 
-def loss_plot(x):
+def plot(x):
     for t, v in enumerate(x):
         plt.plot(list(range(t * epochs, (t + 1) * epochs)), v)
-        #On affiche le graphe des pertes
-def loss_plot2(x,y):
+def plot2(x,y):
     for t,v in enumerate(x):
         plt.plot(list(range(t * epochs, (t + 1) * epochs)), v,label="train loss")
     for t,v in enumerate(y):
         plt.plot(list(range(t * epochs, (t + 1) * epochs)), v,label="dev loss")
-
-def accuracy_plot(x):
-    for t, v in enumerate(x):
-        plt.plot(list(range(t * epochs, num_task * epochs)), v)
-    plt.ylim(0, 1)
-    #On affiche le graphe d'accuracy
 
 
 
