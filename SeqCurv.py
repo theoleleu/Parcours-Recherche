@@ -28,9 +28,8 @@ def fim_diag(model: nn.Module, data_loader: list, samples_no: int = None) -> Dic
         if param.requires_grad:
             fim[name] = torch.zeros_like(param)
 
-    seen_no = 0
+    seen_no,i = 0,0
     all_fims = dict({})
-    i=0
     n=len(data_loader)
     while (samples_no is None or seen_no < samples_no) and i<n:
         data, target = data_loader[i]
@@ -54,7 +53,6 @@ def fim_diag(model: nn.Module, data_loader: list, samples_no: int = None) -> Dic
         grad2 /= float(seen_no)
 
     all_fims[seen_no] = fim
-
     return all_fims
 class MLP(nn.Module):
     def __init__(self, hidden_size=5):
@@ -73,8 +71,7 @@ class MLP(nn.Module):
 
 def penalty(model,data,task):
     nbtasks=len(model)
-    u={}
-    v={}
+    u,v={},{}
     means=[]
     for i in range(nbtasks):
       means.append({})
@@ -99,8 +96,8 @@ def penalty(model,data,task):
 def process(epochs,  train_loader : list, dev_loader : list, test_loader : list, importance, use_cuda=True, weight=None):
     model=[]
     loss, dev_loss, acc = [], [], []
-    opt = []
-    #opt = torch.contrib.optim.SWA(base_opt, swa_start=10, swa_freq=5, swa_lr=0.05)  base_
+    opt = []#base_
+    #opt = torch.contrib.optim.SWA(base_opt, swa_start=10, swa_freq=5, swa_lr=0.05)  
     for task in range(num_task):
         loss.append([])
         dev_loss.append([])
@@ -135,8 +132,7 @@ def train(model, optimizer, task : int, train_load: list, dev_load: list, import
     for n, p in model[task].named_parameters():
           if ini==0 and 'weight' in n:
             d=p.data
-            un=u[n]
-            vn=v[n]
+            un,vn=u[n],v[n]
             if len(d.size())>1:
               d=d[:,0]
               un,vn=un[:,0],vn[:,0]
@@ -146,7 +142,6 @@ def train(model, optimizer, task : int, train_load: list, dev_load: list, import
     #    optimizer.zero_grad()
     #    output = model[task](inp)
     #    loss = F.cross_entropy(output, target) + importance * penal
-        
 
     for inp,target in dev_load:
         optimizer.zero_grad()
@@ -160,8 +155,7 @@ def train(model, optimizer, task : int, train_load: list, dev_load: list, import
         for n, p in model[task].named_parameters():
           if ini==0 and 'weight' in n:
             d=p.data
-            un=u[n]
-            vn=v[n]
+            un,vn=u[n],v[n]
             if len(d.size())>1:
               d=d[:,0]
               un,vn=un[:,0],vn[:,0]
