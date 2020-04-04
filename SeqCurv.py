@@ -68,7 +68,6 @@ class MLP(nn.Module):
         x = self.fc4(x)
         return x
 
-
 def penalty(model,data,task):
     nbtasks=len(model)
     u,v={},{}
