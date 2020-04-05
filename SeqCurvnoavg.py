@@ -6,11 +6,7 @@ from torch import nn#neural netwaork
 import numpy as np#opérations matricielles
 import matplotlib.pyplot as plt#graphiques
 from tqdm import tqdm
-#from torch.contrib import SWA
 import torch.autograd as autograd
-import time
-import sys
-from typing import Dict
 from torch.distributions import Categorical
 
 epochs = 50
@@ -22,16 +18,15 @@ num_task = 3
 
 assert int(torch.__version__.split(".")[1]) >= 4, "PyTorch 0.4+ required"
 
-def fim_diag(model: nn.Module, data_loader: list, samples_no: int = None) -> Dict[int, Dict[str, torch.Tensor]]:
+def fim_diag(model: nn.Module, data_loader: list, samples_no: int = None):
     fim = {}
     for name, param in model.named_parameters():
         if param.requires_grad:
             fim[name] = torch.zeros_like(param)
 
-    seen_no,i = 0,0
-    all_fims = dict({})
+    compt,i = 0,0
     n=len(data_loader)
-    while (samples_no is None or seen_no < samples_no) and i<n:
+    while (samples_no is None or compt < samples_no) and i<n:
         data, target = data_loader[i]
         i+=1
         logits = model(data)
@@ -39,21 +34,19 @@ def fim_diag(model: nn.Module, data_loader: list, samples_no: int = None) -> Dic
         samples = logits.gather(1, outdx)
 
         idx, batch_size = 0, data.size(0)
-        while idx < batch_size and (samples_no is None or seen_no < samples_no):
+        while idx < batch_size and (samples_no is None or compt < samples_no):
             model.zero_grad()
             torch.autograd.backward(samples[idx], retain_graph=True)
             for name, param in model.named_parameters():
                 if param.requires_grad:
                     fim[name] += (param.grad * param.grad)
                     fim[name].detach_()
-            seen_no += 1
             idx += 1
+        compt += idx
 
     for name, grad2 in fim.items():
-        grad2 /= float(seen_no)
-
-    all_fims[seen_no] = fim
-    return all_fims
+        grad2 /= float(compt)
+    return fim
 class MLP(nn.Module):
     def __init__(self, hidden_size=5):
         super(MLP, self).__init__()
@@ -78,7 +71,6 @@ def penalty(model,data,task):
         means[i][n] =p.data
     for i in range(nbtasks):
       fim=fim_diag(model[i],data[i])
-      fim=fim[400]
       d=means[i]
       
       for n, p in fim.items():
@@ -93,10 +85,7 @@ def penalty(model,data,task):
 
 
 def process(epochs,  train_loader : list, dev_loader : list, test_loader : list, importance, use_cuda=True, weight=None):
-    model=[]
-    loss, dev_loss, acc = [], [], []
-    opt = []#base_
-    #opt = torch.contrib.optim.SWA(base_opt, swa_start=10, swa_freq=5, swa_lr=0.05)  
+    model, loss, dev_loss, acc, opt = [], [], [], [], []
     for task in range(num_task):
         loss.append([])
         dev_loss.append([])
@@ -116,7 +105,6 @@ def process(epochs,  train_loader : list, dev_loader : list, test_loader : list,
             for sub_task in range(task + 1):
                 task_acc=test(model[task], test_loader[sub_task])
                 acc[sub_task].append(task_acc)
-        #opt.swap_swa_sgd()
     return loss, dev_loss, acc
 
 def train(model, optimizer, task : int, train_load: list, dev_load: list, importance: float, ini=0):
@@ -138,12 +126,10 @@ def train(model, optimizer, task : int, train_load: list, dev_load: list, import
             penal+=torch.dot(d,un*d)-2*torch.dot(d,vn)
 
     #for inp,target in train_load[task]:
-    #    optimizer.zero_grad()
     #    output = model[task](inp)
     #    loss = F.cross_entropy(output, target) + importance * penal
 
     for inp,target in dev_load:
-        optimizer.zero_grad()
         output = model[task](inp)
         dloss = F.cross_entropy(output, target) + importance * penal
         dev_epoch_loss += float(dloss.item())

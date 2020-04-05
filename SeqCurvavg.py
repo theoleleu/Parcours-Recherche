@@ -8,8 +8,6 @@ import matplotlib.pyplot as plt#graphiques
 from tqdm import tqdm
 from copy import deepcopy
 import torch.autograd as autograd
-import time
-import sys
 from torch.distributions import Categorical
 
 epochs = 50
@@ -143,12 +141,10 @@ def train(model, dic1, optimizer, task : int, train_load: list, dev_load: list, 
         model[task].load_state_dict(dic1)#average taken
 
     #for inp,target in train_load[task]:
-    #    optimizer.zero_grad()
     #    output = model[task](inp)
     #    loss = F.cross_entropy(output, target) + importance * penal
 
     for inp,target in dev_load:
-        optimizer.zero_grad()
         output = model[task](inp)
         dloss = F.cross_entropy(output, target) + importance * penal
         dev_epoch_loss += float(dloss.item())
