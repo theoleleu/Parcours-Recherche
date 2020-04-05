@@ -31,7 +31,7 @@ class MLP(nn.Module):
 
 
 
-def standard_process(epochs, train_loader : list, dev_loader : list, test_loader : list, use_cuda=True, weight=True):
+def process(epochs, train_loader : list, dev_loader : list, test_loader : list, use_cuda=True, weight=True):
     model = MLP(hidden_size)
     optimizer = torch.optim.SGD(params=model.parameters(), lr=lr)
     loss, dev_loss, acc = [], [], []
@@ -43,7 +43,7 @@ def standard_process(epochs, train_loader : list, dev_loader : list, test_loader
 
         for _ in tqdm(range(epochs)):
 
-            epoch_loss,epoch_dev_loss, model=normal_train(model, optimizer, train_loader[task],dev_loader[task])
+            epoch_loss,epoch_dev_loss, model=train(model, optimizer, train_loader[task],dev_loader[task])
             loss[task].append(epoch_loss)
             dev_loss[task].append(epoch_dev_loss)
 
@@ -54,7 +54,7 @@ def standard_process(epochs, train_loader : list, dev_loader : list, test_loader
     return loss, dev_loss, acc
     
     
-def normal_train(model, optimizer, data_load: list,dev_load : list):
+def train(model, optimizer, data_load: list,dev_load : list):
     model.train()
     epoch_loss,epoch_dev_loss = 0, 0
     for inp,target in dev_load:

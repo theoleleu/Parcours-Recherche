@@ -41,5 +41,5 @@ epochs = 30
 lr = 1e-3
 hidden_size = 5
 num_task = 3
-loss, dev_loss, acc = standard_process(epochs,train_loader,dev_loader,dev_loader)
+loss, dev_loss, acc = process(epochs,train_loader,dev_loader,dev_loader)
 plot2(loss,dev_loss)

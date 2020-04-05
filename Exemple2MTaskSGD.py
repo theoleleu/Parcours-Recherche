@@ -50,6 +50,6 @@ sample_size = 100
 hidden_size = 80
 num_task = 3
 
-loss, dev_loss, acc = standard_process(epochs,train_loader,dev_loader,test_loader)
+loss, dev_loss, acc = process(epochs,train_loader,dev_loader,test_loader)
 plot2(loss,dev_loss)
 plot(acc)
