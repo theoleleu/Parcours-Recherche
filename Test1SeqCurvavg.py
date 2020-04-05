@@ -1,7 +1,7 @@
 from SeqCurvavg import *
-import numpy.random.normal as normal
+from numpy.random import normal
 import torch.tensor as tensor
-import np.concatenate as concatenate
+from numpy import concatenate
 
 def plot(x):
     for t, v in enumerate(x):

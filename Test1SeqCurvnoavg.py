@@ -1,8 +1,8 @@
 from SeqCurvnoavg import *
-import numpy as np
-import np.random.normal as normal
+from numpy.random import normal
 import torch.tensor as tensor
-import np.concatenate as concatenate
+from numpy import concatenate
+from matplotlib import pyplot as plt
 
 def plot(x):
     for t, v in enumerate(x):
@@ -15,8 +15,6 @@ def plot2(x,y):
 
 
 
-from torch.utils.data import Dataset
-from matplotlib import pyplot as plt
 size = 100
 sigma = 0.6
 a1=concatenate((normal(3, sigma, size), normal(4, sigma, size), normal(2, sigma, size),normal(5, sigma, size)))
