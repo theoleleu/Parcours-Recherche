@@ -1,4 +1,4 @@
-from Programme import *
+from MTaskSGD import *
 from numpy.random import normal
 import torch.tensor as tensor
 from numpy import concatenate

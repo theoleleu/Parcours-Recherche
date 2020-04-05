@@ -1,4 +1,4 @@
-from Programme import *
+from MTaskSGD import *
 from numpy.random import normal
 import torch.tensor as tensor
 from numpy import concatenate
@@ -53,6 +53,3 @@ num_task = 3
 loss, dev_loss, acc = standard_process(epochs,train_loader,dev_loader,test_loader)
 plot2(loss,dev_loss)
 plot(acc)
-
-plt.plot(acc[0], label="sgd")
-plt.legend()
