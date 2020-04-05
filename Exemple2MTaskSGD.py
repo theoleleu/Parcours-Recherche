@@ -6,19 +6,20 @@ from numpy import concatenate
 size = 1000
 size2= 500
 sigma = 0.6
-a1=concatenate((normal(2, sigma, size), normal(4, sigma, size), normal(1, sigma, size),normal(5, sigma, size)))#Le paramètre de la distribution réalise des classes
+#On réalise différents groupes de points pour chaque tâche
+a1=concatenate((normal(2, sigma, size), normal(4, sigma, size), normal(1, sigma, size),normal(5, sigma, size)))
 a2 = concatenate((normal(4, sigma, size), normal(1.8, sigma, size), normal(7, sigma, size),normal(5, sigma, size)))
-b1= concatenate((normal(2.8, sigma, size), normal(3.7, sigma, size), normal(1.7, sigma, size),normal(5.4, sigma, size)))#Le paramètre de la distribution réalise des classes
+b1= concatenate((normal(2.8, sigma, size), normal(3.7, sigma, size), normal(1.7, sigma, size),normal(5.4, sigma, size)))
 b2 = concatenate((normal(3.9, sigma, size), normal(1.5, sigma, size), normal(6.4, sigma, size),normal(5.2, sigma, size)))
-c1=concatenate((normal(3.1, sigma, size), normal(3.7, sigma, size), normal(1.4, sigma, size),normal(5.7, sigma, size)))#Le paramètre de la distribution réalise des classes
+c1=concatenate((normal(3.1, sigma, size), normal(3.7, sigma, size), normal(1.4, sigma, size),normal(5.7, sigma, size)))
 c2 = concatenate((normal(3.9, sigma, size), normal(1.5, sigma, size), normal(6, sigma, size),normal(4.7, sigma, size)))
-t1=concatenate((normal(3.1, sigma, size2), normal(3.8, sigma, size2), normal(1.4, sigma, size2),normal(5.4, sigma, size2)))#Le paramètre de la distribution réalise des classes
+t1=concatenate((normal(3.1, sigma, size2), normal(3.8, sigma, size2), normal(1.4, sigma, size2),normal(5.4, sigma, size2)))
 t2 = concatenate((normal(3.9, sigma, size2), normal(1.4, sigma, size2), normal(5.8, sigma, size2),normal(4.8, sigma, size2)))
-t3 = concatenate((normal(3.1, sigma, size2), normal(3.8, sigma, size2), normal(1.4, sigma, size2),normal(5, sigma, size2)))#Le paramètre de la distribution réalise des classes
+t3 = concatenate((normal(3.1, sigma, size2), normal(3.8, sigma, size2), normal(1.4, sigma, size2),normal(5, sigma, size2)))
 t4 = concatenate((normal(3.9, sigma, size2), normal(1.7, sigma, size2), normal(5.7, sigma, size2),normal(4.8, sigma, size2)))
-t5=concatenate((normal(3.1, sigma, size2), normal(3.8, sigma, size2), normal(1.4, sigma, size2),normal(5.4, sigma, size2)))#Le paramètre de la distribution réalise des classes
+t5=concatenate((normal(3.1, sigma, size2), normal(3.8, sigma, size2), normal(1.4, sigma, size2),normal(5.4, sigma, size2)))
 t6 = concatenate((normal(3.9, sigma, size2), normal(1.7, sigma, size2), normal(5.7, sigma, size2),normal(4.8, sigma, size2)))
-at1=concatenate((normal(2, sigma, size2), normal(3.9, sigma, size2), normal(1, sigma, size2),normal(5, sigma, size2)))#Le paramètre de la distribution réalise des classes
+at1=concatenate((normal(2, sigma, size2), normal(3.9, sigma, size2), normal(1, sigma, size2),normal(5, sigma, size2)))
 at2 = concatenate((normal(4, sigma, size2), normal(1.8, sigma, size2), normal(6.95, sigma, size2),normal(5, sigma, size2)))
 TR1=[[[i[0],i[1]]] for i in zip(a1,a2)]
 TR2=[[[i[0],i[1]]] for i in zip(b1,b2)]
